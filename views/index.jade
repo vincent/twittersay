@@ -7,7 +7,7 @@ block content
     io = io.connect()
     
     // Emit ready event.
-    io.emit('ready', #{roomOptions});
+    io.emit('ready', !{roomOptions});
       
     // Listen for the talk event.
     io.on('message', function(data) {
