@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  div#content
+
+  script(type='text/javascript')
+    io = io.connect()
+    
+    // Emit ready event.
+    io.emit('ready', #{roomOptions});
+      
+    // Listen for the talk event.
+    io.on('message', function(data) {
+      // discard if hovering a button
+      if ($('.actions *:hover').length) return;
+        
+      // remove last
+      if ($('#content .tweet').length > 20)
+        $('#content .tweet:last').remove();
+
+      // prepend a new tweet
+      $('#content').prepend(
+          '<div class="tweet">'
+        +   '<div class="actions">'
+        +     '<a class="retweet" href="//twitter.com/share?text=' + escape(data.message) + '"><i class="retweet"></i>retweet</a>'
+        +   '</div>'
+        +   data.message 
+        + '</div>'
+      )
+    })

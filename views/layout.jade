@@ -1,0 +1,31 @@
+doctype 5
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/javascripts/jquery-1.6.2.min.js')
+    script(src='/socket.io/socket.io.js')
+  body
+    h1= title
+
+    div.categories
+      h2 By tag
+      ul#hashtags.category
+        each tag in hashtags
+          li
+            a.location(href='/hashtag/#{tag}', data-tag=#{tag}) #{tag}
+    
+      h2 By language
+      ul#languages.category
+        each name,code in languages
+          li
+            a.location(href='/lang/#{name}', data-lang=#{code}) #{name}
+    
+      h2 By country
+      ul#countries.category
+        each l,name in locations
+          li
+            a.location(href='/country/#{name}', data-loc=#{l.loc}) #{name}
+
+    block content
+
