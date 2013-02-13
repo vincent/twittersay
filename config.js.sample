@@ -1,0 +1,17 @@
+module.exports = {
+  webapp: {
+    port:   3000,
+    ip:     '0.0.0.0',
+    secret: 'ploplop'
+  },
+  redis: {
+    port: 6379,
+    host: 'localhost',
+  },
+  twitter: {
+    consumer_key:         'consumer_key',
+    consumer_secret:      'consumer_secret',
+    access_token_key:     'access_token_key',
+    access_token_secret:  'access_token_secret'
+  }
+}

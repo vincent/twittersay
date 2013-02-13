@@ -1,11 +1,15 @@
-var express = require('express.io')
-  , routes = require('./routes')
-  , http = require('http')
-  , path = require('path')
-	, async = require('async')
-	, ts = require('twittersay');
+// modules dependencies
+var conf = require('./config'),
+  express = require('express.io'),
+  routes = require('./routes'),
+  http = require('http'),
+  path = require('path'),
+	async = require('async'),
+	tsgen = require('twittersay-core').generator(conf);
 
+// quick & dirty modules
 var html = require('htmlify');
+
 
 var app = express();
 
@@ -16,10 +20,10 @@ app.configure(function(){
   app.use(express.logger('dev'));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(express.cookieParser('plop'));
+  app.use(express.cookieParser(conf.webapp.secret));
 
   app.use(express.session({
-    secret: process.env.CLIENT_SECRET || 'plop',
+    secret: conf.webapp.secret,
     maxAge: new Date(Date.now() + 7200000) // 2h Session lifetime
   }));
 
@@ -39,16 +43,17 @@ var rooms = { };
 var cron = function(){
 	for (roomName in rooms) {
 		// get a random sentance, with room's options
-    ts.randomSentance(rooms[roomName], function(err, message){
+    tsgen.randomSentance(rooms[roomName], function(err, message){
 		  // and broadcast !
   	  app.io.room(rooms[roomName].room).broadcast('message', { message: html.parse(message) })
 		})
   }
+  // run cron every 2s
   setTimeout(cron, 2000);
 };
 
-// run cron every 2s
-setTimeout(cron, 2000); cron();
+// launch cron now
+cron();
 
 // io routes
 app.io.route('ready', function(req) {
@@ -69,7 +74,6 @@ app.get('/hashtag/:hashtag', routes.index);
 app.get('/country/:country', routes.index);
 
 // to listen and serve
-var port = process.env.PORT || 3000;
-app.listen(port, function(){
-  console.log("Express server listening on port " + port);
+var server = app.listen(conf.webapp.port, function(){
+  console.log("Express server listening on port " + server.address().port);
 });

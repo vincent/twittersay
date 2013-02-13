@@ -1,17 +1,31 @@
-var fs = require('fs'),
-    sys = require('sys'),
-    util = require('util'),
-    redis = require('redis').createClient(),
-    twitter = require('twitter');
+// modules dependencies
+var conf = require('./config'),
+  fs = require('fs'),
+  sys = require('sys'),
+  util = require('util'),
+  twitter = require('twitter'),
+  optimist = require('optimist'),
+  tsharv = require('twittersay-core').harvester(conf),
+  
+  // TODO: trash this
+  redis = require('redis').createClient();
 
-var twit = new twitter({
-  consumer_key: 'consumer_key',
-  consumer_secret: 'consumer_secret',
-  access_token_key: 'access_token_key',
-  access_token_secret: 'access_token_secret'
-});
+// quick & dirty modules
+var locations = require('locations');
 
-var init = function() {
+// launcher options 
+var argv = optimist
+    .describe('method', 'harvesting method (files|twitter)')
+    .default('method', 'twitter')
+    .describe('locations', 'spot tweets in this location (gps bounding box)')
+    .default('locations', false)
+    .describe('tags', 'spot tweets with one of these tags')
+    .default('tags', false)
+    .argv;
+
+
+// harvest local files
+var initLocalFiles = function() {
   var texts = fs.readdirSync(__dirname + '/texts');
     for(var i = 0; i < 1; i++) {
       var filename = __dirname + '/texts/' + texts[i];
@@ -25,42 +39,23 @@ var init = function() {
     }
 }
 
-var initTwitterStream = function(streamOptions) {
-  twit.verifyCredentials(function(data) {
-    //console.log(util.inspect(data));
-  });
 
-  streamOptions = streamOptions || {};
+/**
+ * Run the requested harvester: files or twitter (default)
+ *
+ */
+if (argv.method == 'files') {
+	initLocalFiles();
 
-  twit.stream('statuses/filter', streamOptions, function(stream) {
-    stream.on('data', function(data) {
-      if (!data.text) return;
+} else if (argv.method == 'twitter') {
+  var streamOptions = {};
+  
+  if (argv.locations) streamOptions.locations = argv.locations;
+  if (argv.tags) streamOptions.tags = argv.tags;
+  
+	tsharv.initTwitterStream(streamOptions);
 
-      var words = data.text.split(/\s+/);
-      for(var j = 0; j < words.length - 1; j++) {
-        redis.hincrby(words[j], words[j+1], 1 + Math.sqrt(data.retweet_count));
-      }
-			
-			console.log(words.length, 'words');
-    });
-
-    stream.on('error', function(data) {
-      //console.log('onerror: ', data);
-    });
-
-    console.log("I'm listenning to twitter ", util.inspect(streamOptions));
-  });
-};
-
-if (process.argv[2] == 'init') {
-	init();
-} else if (process.argv[2] == 'twitter') {
-	initTwitterStream();
-} else if (process.argv[2] == 'in') {
-	initTwitterStream({
-		locations: fs.readFileSync(process.argv[3], 'utf8').trim()
-	});
 } else {
-	console.log('You need to provide some parameters');
+	console.log('You need to provide some parameters, I cannot guess all by myself !');
 }
 
