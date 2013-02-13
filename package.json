@@ -6,8 +6,24 @@
     "start": "node app"
   },
   "dependencies": {
-    "async": "0.1.10",
-    "express.io": "1.1.8",
+    "async": "*",
+    "express.io": ">= 1.1.8",
     "jade": "*"
-  }
+  },
+  "description": "Produce tweets with markov chains over revious twitted content",
+  "main": "app.js",
+  "devDependencies": {
+    "coffee-script": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vincent/twittersay.git"
+  },
+  "keywords": [
+    "twitter",
+    "markov",
+    "bot"
+  ],
+  "author": "Vincent Lark <vincent.lark@gmail.com>",
+  "license": "MIT"
 }
