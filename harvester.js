@@ -19,6 +19,8 @@ var argv = optimist
     .default('method', 'twitter')
     .describe('locations', 'spot tweets in this location (gps bounding box)')
     .default('locations', false)
+    .describe('country', 'spot tweets in this country (will be converted in gps bbox)')
+    .default('country:', false)
     .describe('tags', 'spot tweets with one of these tags')
     .default('tags', false)
     .argv;
@@ -50,7 +52,12 @@ if (argv.method == 'files') {
 } else if (argv.method == 'twitter') {
   var streamOptions = {};
   
-  if (argv.locations) streamOptions.locations = argv.locations;
+  if (argv.country && locations.countries[argv.country])
+    streamOptions.locations = locations.countries[argv.country].loc;
+
+  else if (argv.locations)
+    streamOptions.locations = argv.locations;
+
   if (argv.tags) streamOptions.tags = argv.tags;
   
 	tsharv.initTwitterStream(streamOptions);
