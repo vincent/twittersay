@@ -5,7 +5,9 @@ var conf = require('./config'),
   http = require('http'),
   path = require('path'),
 	async = require('async'),
-	tsgen = require('twittersay-core').generator(conf);
+	ts = require('twittersay-core'),
+  tsgen = ts.generator(conf),
+  tsdb = ts.db(conf);
 
 // quick & dirty modules
 var html = require('htmlify');
@@ -72,6 +74,13 @@ app.get('/', routes.index);
 app.get('/lang/:lang', routes.index);
 app.get('/hashtag/:hashtag', routes.index);
 app.get('/country/:country', routes.index);
+
+app.get('/stats/wordcount', function(req, res){
+  tsdb.get('twittersay-core-word-count', function(err, count){
+    if (err) return console.log(err);
+    res.end((count ? parseInt(count) : 0) + ' words indexed');
+  })
+});
 
 // to listen and serve
 var server = app.listen(conf.webapp.port, function(){
