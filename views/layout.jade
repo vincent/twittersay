@@ -34,5 +34,6 @@ html
     $(function() {
       (function updateCounters() {
           $('#wordcount').load('/stats/wordcount');
+          setTimeout(updateCounters, 2000);
       })();
     });
