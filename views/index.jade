@@ -4,13 +4,14 @@ block content
   div#content
 
   script(type='text/javascript')
-    io = io.connect()
-    
+    sio = io.connect()
+    //setInterval(function(){ if (!(io.socket && io.socket.connected))  }, 500)
+
     // Emit ready event.
-    io.emit('ready', !{roomOptions});
+    sio.emit('ready', !{roomOptions});
       
-    // Listen for the talk event.
-    io.on('message', function(data) {
+    // Listen for broadcast events
+    sio.on('message', function(data) {
       // discard if hovering a button
       if ($('.actions *:hover').length) return;
         

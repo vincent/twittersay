@@ -8,7 +8,9 @@
   "dependencies": {
     "async": "*",
     "express.io": ">= 1.1.8",
-    "jade": "*"
+    "jade": "*",
+    "optimist": "*",
+    "redis": "*",
   },
   "description": "Produce tweets with markov chains over revious twitted content",
   "main": "app.js",
