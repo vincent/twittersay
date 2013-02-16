@@ -7,6 +7,7 @@ html
     script(src='/socket.io/socket.io.js')
   body
     h1= title
+    h3#wordcount
 
     div.categories
       h2 By tag
@@ -29,3 +30,9 @@ html
 
     block content
 
+  script(type='text/javascript')
+    $(function() {
+      (function updateCounters() {
+          $('#wordcount').load('/stats/wordcount');
+      })();
+    });

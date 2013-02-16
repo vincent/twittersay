@@ -78,6 +78,7 @@ app.get('/country/:country', routes.index);
 app.get('/stats/wordcount', function(req, res){
   tsdb.get('twittersay-core-word-count', function(err, count){
     if (err) return console.log(err);
+    res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end((count ? parseInt(count) : 0) + ' words indexed');
   })
 });
