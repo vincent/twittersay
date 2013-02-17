@@ -1,6 +1,19 @@
+var topics = require('twitter-trends').topics;
+
 /*
  * GET home page.
  */
+
+var trends = {};
+
+function cron() {
+  topics(1, function(top){
+    trends.general = top;
+
+    console.log('======>>>',trends.general,'<<<======');
+  })
+}
+setInterval(cron, 1000 * 60 * 5); cron();
 
 exports.index = function(req, res){
   res.render('index', {
@@ -21,9 +34,7 @@ exports.index = function(req, res){
 			de: 'Deusch',
 		},
 		
-		hashtags: {
-			'#musa': '#musa'
-		}
+		hashtags: trends.general
 		
 	});
 };
