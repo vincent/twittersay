@@ -12,7 +12,7 @@ block content
     
     // Listen for broadcast events
     sio.on('wordcount', function(data) {
-      $('#wordcount').html(data.wordcount);
+      $('#wordcount').html(data.wordcount + ' words indexed');
     });
     
     // Listen for message events
