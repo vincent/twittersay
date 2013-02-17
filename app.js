@@ -50,6 +50,12 @@ var cron = function(){
   	  app.io.room(rooms[roomName].room).broadcast('message', { message: html.parse(message) })
 		})
   }
+  // send wordcount with broadcast
+  tsdb.get('twittersay-core-word-count', function(err, count){
+    if (err) return console.log(err);
+    app.io.broadcast('wordcount', {wordcount: count})
+  });
+  
   // run cron every 2s
   setTimeout(cron, 2000);
 };
@@ -74,14 +80,6 @@ app.get('/', routes.index);
 app.get('/lang/:lang', routes.index);
 app.get('/hashtag/:hashtag', routes.index);
 app.get('/country/:country', routes.index);
-
-app.get('/stats/wordcount', function(req, res){
-  tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) return console.log(err);
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end((count ? parseInt(count) : 0) + ' words indexed');
-  })
-});
 
 // to listen and serve
 var server = app.listen(conf.webapp.port, function(){

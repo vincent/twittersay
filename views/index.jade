@@ -9,8 +9,13 @@ block content
 
     // Emit ready event.
     sio.emit('ready', !{roomOptions});
-      
+    
     // Listen for broadcast events
+    sio.on('wordcount', function(data) {
+      $('#wordcount').html(data.wordcount);
+    });
+    
+    // Listen for message events
     sio.on('message', function(data) {
       // discard if hovering a button
       if ($('.actions *:hover').length) return;
