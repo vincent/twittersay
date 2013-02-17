@@ -15,14 +15,17 @@ var locations = require('locations');
 
 // launcher options 
 var argv = optimist
-    .describe('method', 'harvesting method (files|twitter)')
+    .describe('method', 'Harvesting method (files|twitter)')
     .default('method', 'twitter')
-    .describe('locations', 'spot tweets in this location (gps bounding box)')
-    .default('locations', false)
-    .describe('country', 'spot tweets in this country (will be converted in gps bbox)')
-    .default('country:', false)
-    .describe('tags', 'spot tweets with one of these tags')
-    .default('tags', false)
+    .describe('locations', 'Specifies a set of bounding boxes to track.')
+    .describe('country', 'Specifies a country to track (will be translated to bounding box)')
+    .describe('lang', 'Filter tweets in this language (english|french|italian|german)')
+    .describe('follow', 'A comma separated list of Twitter user IDs')
+    .describe('track', 'Keywords to track. Phrases of keywords are specified by a comma-separated list')
+    .describe('countries', 'List of recognized countries')
+    .describe('langs', 'List of recognized languages')
+    .describe('help', 'This help')
+    .describe('debug', 'Debug mode')
     .argv;
 
 
@@ -36,6 +39,7 @@ var initLocalFiles = function() {
         for(var j = 0; j < words.length - 1; j++) {
             redis.hincrby(words[j], words[j+1], 1);
         }
+        redis.incrby('twittersay-core-word-count', words.length);
         redis.quit();
       });
     }
@@ -48,21 +52,32 @@ var initLocalFiles = function() {
  */
 if (argv.method == 'files') {
 	initLocalFiles();
-
-} else if (argv.method == 'twitter') {
-  var streamOptions = {};
-  
-  if (argv.country && locations.countries[argv.country])
-    streamOptions.locations = locations.countries[argv.country].loc;
-
-  else if (argv.locations)
-    streamOptions.locations = argv.locations;
-
-  if (argv.tags) streamOptions.tags = argv.tags;
-  
-	tsharv.initTwitterStream(streamOptions);
-
-} else {
-	console.log('You need to provide some parameters, I cannot guess all by myself !');
+  process.exit();
 }
 
+var streamOptions = {};
+
+if (argv.help) {
+  optimist.showHelp();
+  process.exit();
+}
+
+if (argv.langs) {
+  console.log(tsharv.knownLanguages.join("\n"));
+  process.exit();
+}
+
+if (argv.countries) {
+  for (c in locations.countries)
+    console.log(c);
+  process.exit();
+}
+
+if (argv.country && locations.countries[argv.country])
+  argv.locations = locations.countries[argv.country].loc;
+  
+for (opt in { 'debug':1, 'lang':1, 'country':1, 'locations':1, 'track':1, 'follow':1 }) {
+  if (argv[opt]) streamOptions[opt] = argv[opt];
+}
+  
+tsharv.initTwitterStream(streamOptions);
