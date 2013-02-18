@@ -13,23 +13,25 @@ html
 
     div.categories
 
-      if hashtags.length
+      if hashtags && hashtags.length
         h2 By tag
         ul#hashtags.category
           each tag in hashtags
             li
               a.location(href='/hashtag/#{tag.name}', data-tag=#{tag.name}) #{tag.name}
     
-      h2 By language
-      ul#languages.category
-        each name,code in languages
-          li
-            a.location(href='/lang/#{name}', data-lang=#{code}) #{name}
+      if languages
+        h2 By language
+        ul#languages.category
+          each name,code in languages
+            li
+              a.location(href='/lang/#{name}', data-lang=#{code}) #{name}
     
-      h2 By country
-      select#countries.category
-        each l,name in locations
-          option(data-loc=#{l.loc}) #{name}
+      if locations
+        h2 By country
+        select#countries.category
+          each l,name in locations
+            option(value=name, data-loc=l.loc, selected=(name=="France")) #{name}
 
     block content
 
