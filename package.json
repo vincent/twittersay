@@ -11,12 +11,13 @@
     "jade": "*",
     "optimist": "*",
     "redis": "*",
-    "languagedetect" : "*",
+    "languagedetect": "*"
   },
   "description": "Produce tweets with markov chains over revious twitted content",
   "main": "app.js",
   "devDependencies": {
-    "coffee-script": "*"
+    "coffee-script": "*",
+    "grunt-shell": "*"
   },
   "repository": {
     "type": "git",

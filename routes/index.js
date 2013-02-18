@@ -1,11 +1,9 @@
 var topics = require('twitter-trends').topics;
-
-/*
- * GET home page.
- */
-
 var trends = {};
 
+/**
+ * Refresh trending topics every 5 minutes
+ */
 function cron() {
   topics(1, function(top){
     trends.general = top;
@@ -15,6 +13,9 @@ function cron() {
 }
 setInterval(cron, 1000 * 60 * 5); cron();
 
+/**
+ * Main application route
+ */
 exports.index = function(req, res){
   res.render('index', {
 		title: 'Twitter says',
