@@ -1,19 +1,25 @@
-// modules dependencies
-var conf = require('./config'),
-  fs = require('fs'),
-  sys = require('sys'),
-  util = require('util'),
-  twitter = require('twitter'),
-  optimist = require('optimist'),
-  tsharv = require('twittersay-core').harvester(conf),
-  
-  // TODO: trash this
-  redis = require('redis').createClient();
+#!/usr/bin/env node
 
+/**
+ * Module dependencies.
+ */
+var conf      = require('./config'),
+    fs        = require('fs'),
+    sys       = require('sys'),
+    util      = require('util'),
+    twitter   = require('twitter'),
+    optimist  = require('optimist'),
+    tsharv    = require('twittersay-core').harvester(conf);
+  
 // quick & dirty modules
 var locations = require('locations');
 
-// launcher options 
+// TODO: trash this
+var redis = require('redis').createClient();
+
+/**
+ * Launcher options
+ */ 
 var argv = optimist
     .describe('method', 'Harvesting method (files|twitter)')
     .default('method', 'twitter')

@@ -11,6 +11,7 @@
     "jade": "*",
     "optimist": "*",
     "redis": "*",
+    "twitter": "*",
     "languagedetect": "*"
   },
   "description": "Produce tweets with markov chains over revious twitted content",

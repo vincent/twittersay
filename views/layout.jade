@@ -12,11 +12,13 @@ html
     h3#wordcount
 
     div.categories
-      h2 By tag
-      ul#hashtags.category
-        each tag in hashtags
-          li
-            a.location(href='/hashtag/#{tag.name}', data-tag=#{tag.name}) #{tag.name}
+
+      if hashtags.length
+        h2 By tag
+        ul#hashtags.category
+          each tag in hashtags
+            li
+              a.location(href='/hashtag/#{tag.name}', data-tag=#{tag.name}) #{tag.name}
     
       h2 By language
       ul#languages.category
