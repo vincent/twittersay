@@ -8,8 +8,8 @@ var conf    = require('./config'),
     express = require('express.io'),
     http    = require('http'),
     path    = require('path'),
-	  async   = require('async'),
-	  ts      = require('twittersay-core'),
+    async   = require('async'),
+    ts      = require('twittersay-core'),
     tsgen   = ts.generator(conf),
     tsdb    = ts.db(conf);
 

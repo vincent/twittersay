@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     shell: {
       // Generate documentation
       makeDocs: {
-        command: 'ls && doxx --source . --exclude test,public,node_modules --target docs'
+        command: 'ls && doxx --source . --ignore test,public,node_modules --target docs'
       }
     }
   });
