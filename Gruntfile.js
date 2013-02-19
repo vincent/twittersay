@@ -38,8 +38,9 @@ module.exports = function(grunt) {
 
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-shell');
 
   // Default task(s).
-  grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('default', ['jshint', 'shell']);
 
 };

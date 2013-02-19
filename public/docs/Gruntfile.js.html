@@ -58,8 +58,8 @@
         <div class="span3 bs-docs-sidebar">
           <ul class="nav nav-list bs-docs-sidenav affix-top">
             <li class=""><a href="index.html">Main</a></li>
-            <li class="active"><a href="app.js.html">app.js</a></li>
-            <li class=""><a href="Gruntfile.js.html">Gruntfile.js</a></li>
+            <li class=""><a href="app.js.html">app.js</a></li>
+            <li class="active"><a href="Gruntfile.js.html">Gruntfile.js</a></li>
             <li class=""><a href="harvester.js.html">harvester.js</a></li>
             <li class=""><a href="routes/index.js.html">routes/index.js</a></li>
             <li class=""><a href="lib/htmlify/index.js.html">lib/htmlify/index.js</a></li>
@@ -69,115 +69,10 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#conf"><i class="alert alert-success"></i>conf</a>
-              </li>
-              <li><a href="#cron"><i class="alert alert-info"></i>cron</a>
-              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="conf">
-            <h1>conf</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-success radius ctx-type">declaration</div><span>conf</span>
-            </p>
-          </section>
-          <div class="description"><p>Module dependencies.</p> 
-            <pre><code class="language-javascript">var conf    = require('./config'),
-    routes  = require('./routes'),
-    express = require('express.io'),
-    http    = require('http'),
-    path    = require('path'),
-    async   = require('async'),
-    ts      = require('twittersay-core'),
-    tsgen   = ts.generator(conf),
-    tsdb    = ts.db(conf);
-
-// quick & dirty modules
-var html = require('htmlify');
-
-
-var app = express();
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser(conf.webapp.secret));
-
-  app.use(express.session({
-    secret: conf.webapp.secret,
-    maxAge: new Date(Date.now() + 7200000) // 2h Session lifetime
-  }));
-
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler());
-});
-
-app.http().io();
-
-var rooms = [];
-
-var wordcount = 0;
-
-var last = {};</code></pre>
-          </div>
-          <section id="cron">
-            <h1>cron</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-info radius ctx-type">function</div><span>cron()</span>
-            </p>
-          </section>
-          <div class="description"><p>Our spammy cron delivers 1 message in each room (=options) every 2 seconds</p> 
-            <pre><code class="language-javascript">var cron = function(){
-  // compute message for each room, asynchronously
-  async.forEach(rooms,
-    function(roomSpec, next) {
-      // get a random sentance, with room's options
-      tsgen.randomSentance(roomSpec, function(err, message){
-
-        // parse it
-        message = html.parse(message);
-
-        // and broadcast it !
-        app.io.room(roomSpec.name).broadcast('message', {message: message });
-
-        // create last msgs stack if not exist
-        if (!last[roomSpec.name]) {
-          last[roomSpec.name] = [];
-        }
-
-        // keep it in stack
-        last[roomSpec.name].unshift({message: message});
-
-        // clean stack
-        if (last[roomSpec.name].length > 10) {
-          last[roomSpec.name].pop();
-        }
-
-        next();
-      });
-    },
-    function(err) {
-      //console.log('All rooms broadcasted.');
-    }
-  );
-  
-  // send wordcount with broadcast
-  tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) { return console.log(err); }
-    if (count === wordcount)  { return;</code></pre>
-          </div>
           <section>
             <h1></h1>
             <h5 class="subheader"></h5>
@@ -185,53 +80,19 @@ var last = {};</code></pre>
               <div class="label label-success radius ctx-type"></div>
             </p>
           </section>
-          <div class="description"><p>console.log('no new words');</p> 
-            <pre><code class="language-javascript">}
-    
-    wordcount = count;
-    app.io.broadcast('wordcount', {wordcount: count });
-  });
-  
-  // run cron every 2s
-  setTimeout(cron, 2000);
-};
-
-// launch cron now
-cron();
-
-// io routes
-app.io.route('ready', function(req) {
-  if (!req.data.name) { return console.log('No room name provided'); }
-  
-  // subscribe user to channel
-  req.io.join(req.data.name);
-
-  // send him wordcount
-  tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) { return console.log(err); }
-    req.io.emit('wordcount', {wordcount: count });
+          <div class="description"><p>/<em>.js', 'test/</em></p> 
+            <pre><code class="language-javascript">.js' ]
+    } 
   });
 
-  // send him last msgs in this room
-  req.io.emit('messages', last[req.data.name]);
+  // Load plugins
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-shell');
 
-  // register room
-  if (rooms.indexOf(req.data.name) === -1) {
-    rooms.push(req.data);
-    console.log('new room:', req.data);
-  }
-});
+  // Default task(s).
+  grunt.registerTask('default', ['jshint', 'shell']);
 
-// express routes
-app.get('/', routes.index);
-app.get('/lang/:lang', routes.index);
-app.get('/hashtag/:hashtag', routes.index);
-app.get('/country/:country', routes.index);
-
-// to listen and serve
-var server = app.listen(conf.webapp.port, function(){
-  console.log("Express server listening on " + server.address().address + ":" + server.address().port);
-});</code></pre>
+};</code></pre>
           </div>
         </div>
       </div>
