@@ -1,8 +1,9 @@
 module.exports = {
   webapp: {
-    port:   3000,
-    ip:     '0.0.0.0',
-    secret: 'ploplop'
+    port:         3000,
+    ip:           '0.0.0.0',
+    secret:       'ploplop',
+    tweet_every:  8000
   },
   redis: {
     port: 6379,

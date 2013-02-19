@@ -96,7 +96,7 @@ var cron = function(){
   });
   
   // run cron every 2s
-  setTimeout(cron, 2000);
+  setTimeout(cron, conf.webapp.tweet_every);
 };
 
 // launch cron now
