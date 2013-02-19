@@ -4,7 +4,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: '<json:package.json>',
     lint: {
-      files: ['grunt.js', 'bin/**/*', 'lib/**/*.js', 'test/**/*.js']
+      files: ['grunt.js', 'bin/**/*', '*.js', 'lib/**/*.js', 'test/**/*.js']
     },
     test: {
       files: ['test/**/*.js']
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
     shell: {
       // Generate documentation
       makeDocs: {
-        command: 'ls && doxx --source . --ignore test,public,node_modules --target docs'
+        command: 'ls && doxx --source . --ignore "public,static,views,templates,node_modules,grunt,config" --target docs'
       }
     }
   });

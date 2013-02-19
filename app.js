@@ -43,23 +43,31 @@ app.configure('development', function(){
 
 app.http().io();
 
-var rooms = { };
+var rooms = [];
 
 /**
  * Our spammy cron delivers 1 message in each room (=options) every 2 seconds
  */
 var cron = function(){
-  for (roomName in rooms) {
-    // get a random sentance, with room's options
-    tsgen.randomSentance(rooms[roomName], function(err, message){
-      // and broadcast !
-      app.io.room(rooms[roomName].room).broadcast('message', { message: html.parse(message) })
-    })
-  }
+  // compute message for each room, asynchronously
+  async.forEach(rooms,
+    function(roomSpec, next) {
+      // get a random sentance, with room's options
+      tsgen.randomSentance(roomSpec, function(err, message){
+        // and broadcast !
+        app.io.room(roomSpec.room).broadcast('message', {message: html.parse(message) });
+        next();
+      });
+    },
+    function(err) {
+      //console.log('All rooms broadcasted.');
+    }
+  );
+  
   // send wordcount with broadcast
   tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) return console.log(err);
-    app.io.broadcast('wordcount', {wordcount: count})
+    if (err) { return console.log(err); }
+    app.io.broadcast('wordcount', {wordcount: count });
   });
   
   // run cron every 2s
@@ -71,15 +79,19 @@ cron();
 
 // io routes
 app.io.route('ready', function(req) {
+  if (!req.room) {
+    return console.log('No room name provided');
+  }
+  
   // subscribe user to channel
   req.io.join(req.data.room);
 
   // register the room options
-  if (!rooms[req.data.room]) {
-    rooms[req.data.room] = req.data;
-    console.log('new room:', rooms[req.data.room]);
+  if (rooms.indexOf(req.data.room)) {
+    rooms.push(req.data);
+    console.log('new room:', req.data);
   }
-})
+});
 
 // web routes
 app.get('/', routes.index);
