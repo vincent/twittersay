@@ -7,6 +7,13 @@ a {
   color: #00B7FF;
 }
 
+
+#slogan {
+  font-style: italic;
+  position: relative;
+  top: -55px;
+}
+
 .categories {
   float: left;
 	width: 30%;
