@@ -83,20 +83,21 @@ var cron = function(){
     },
     function(err) {
       //console.log('All rooms broadcasted.');
+      
+      // send wordcount with broadcast
+      tsdb.get('twittersay-core-word-count', function(err, count){
+        if (err) { return console.log(err); }
+        if (count === wordcount)  { return; /* console.log('no new words');*/ }
+    
+        wordcount = count;
+        app.io.broadcast('wordcount', {wordcount: count });
+      });
+
+      // re-schedule
+      setTimeout(cron, conf.webapp.wait);
     }
   );
-  
-  // send wordcount with broadcast
-  tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) { return console.log(err); }
-    if (count === wordcount)  { return; /* console.log('no new words');*/ }
     
-    wordcount = count;
-    app.io.broadcast('wordcount', {wordcount: count });
-  });
-  
-  // run cron every 2s
-  setTimeout(cron, conf.webapp.tweet_every);
 };
 
 // launch cron now
