@@ -21,6 +21,9 @@ $ harvester --country Canada --lang french # will harvest tweets in french, from
 ### A webapp
 The webapp continuously display random, generated tweets.
 
+```
+$ ./app.js # or npm start
+```
 
 ## Install
 ```
