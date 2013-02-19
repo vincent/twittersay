@@ -33,6 +33,11 @@ html
           each l,name in locations
             option(value=name, data-loc=l.loc, selected=(name=="France")) #{name}
 
+      br
+      br
+      a(href="/docs")
+        small Source documentation
+
     block content
 
     script(type='text/javascript')
