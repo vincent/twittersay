@@ -45,6 +45,8 @@ app.http().io();
 
 var rooms = [];
 
+var wordcount = 0;
+
 /**
  * Our spammy cron delivers 1 message in each room (=options) every 2 seconds
  */
@@ -67,6 +69,9 @@ var cron = function(){
   // send wordcount with broadcast
   tsdb.get('twittersay-core-word-count', function(err, count){
     if (err) { return console.log(err); }
+    if (count === wordcount)  { return; /* console.log('no new words');*/ }
+    
+    wordcount = count;
     app.io.broadcast('wordcount', {wordcount: count });
   });
   
@@ -83,6 +88,12 @@ app.io.route('ready', function(req) {
   
   // subscribe user to channel
   req.io.join(req.data.name);
+
+  // send him wordcount
+  tsdb.get('twittersay-core-word-count', function(err, count){
+    if (err) { return console.log(err); }
+    req.io.emit('wordcount', {wordcount: count });
+  });
 
   // register the room options
   if (rooms.indexOf(req.data.name) === -1) {
