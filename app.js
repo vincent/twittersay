@@ -79,15 +79,13 @@ cron();
 
 // io routes
 app.io.route('ready', function(req) {
-  if (!req.room) {
-    return console.log('No room name provided');
-  }
+  if (!req.data.name) { return console.log('No room name provided'); }
   
   // subscribe user to channel
-  req.io.join(req.data.room);
+  req.io.join(req.data.name);
 
   // register the room options
-  if (rooms.indexOf(req.data.room)) {
+  if (rooms.indexOf(req.data.name) === -1) {
     rooms.push(req.data);
     console.log('new room:', req.data);
   }
