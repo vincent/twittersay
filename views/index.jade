@@ -14,9 +14,8 @@ block content
     sio.on('wordcount', function(data) {
       $('#wordcount').html(data.wordcount + ' words indexed');
     });
-    
-    // Listen for message events
-    sio.on('message', function(data) {
+
+    var handleMessage = function(data) {
       // discard if hovering a button
       if ($('.actions *:hover').length) return;
         
@@ -33,4 +32,13 @@ block content
         +   data.message 
         + '</div>'
       )
-    })
+    };
+    
+    // Listen for message events
+    sio.on('message', handleMessage);
+    sio.on('messages', function(data) {
+      for (var i = 0; i < data.length; i++) {
+        handleMessage(data[i]);
+      }
+    });
+    

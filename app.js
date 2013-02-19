@@ -47,6 +47,8 @@ var rooms = [];
 
 var wordcount = 0;
 
+var last = {};
+
 /**
  * Our spammy cron delivers 1 message in each room (=options) every 2 seconds
  */
@@ -56,8 +58,26 @@ var cron = function(){
     function(roomSpec, next) {
       // get a random sentance, with room's options
       tsgen.randomSentance(roomSpec, function(err, message){
-        // and broadcast !
-        app.io.room(roomSpec.room).broadcast('message', {message: html.parse(message) });
+
+        // parse it
+        message = html.parse(message);
+
+        // and broadcast it !
+        app.io.room(roomSpec.name).broadcast('message', {message: message });
+
+        // create last msgs stack if not exist
+        if (!last[roomSpec.name]) {
+          last[roomSpec.name] = [];
+        }
+
+        // keep it in stack
+        last[roomSpec.name].unshift({message: message});
+
+        // clean stack
+        if (last[roomSpec.name].length > 10) {
+          last[roomSpec.name].pop();
+        }
+
         next();
       });
     },
@@ -95,7 +115,10 @@ app.io.route('ready', function(req) {
     req.io.emit('wordcount', {wordcount: count });
   });
 
-  // register the room options
+  // send him last msgs in this room
+  req.io.emit('messages', last[req.data.name]);
+
+  // register room
   if (rooms.indexOf(req.data.name) === -1) {
     rooms.push(req.data);
     console.log('new room:', req.data);
