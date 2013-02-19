@@ -125,7 +125,7 @@ app.io.route('ready', function(req) {
   }
 });
 
-// web routes
+// express routes
 app.get('/', routes.index);
 app.get('/lang/:lang', routes.index);
 app.get('/hashtag/:hashtag', routes.index);
