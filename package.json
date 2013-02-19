@@ -2,9 +2,15 @@
   "name": "twittersay",
   "version": "0.0.1",
   "private": true,
+  "description": "Produce tweets with markov chains over revious twitted content",
+  "author": "Vincent Lark <vincent.lark@gmail.com>",
+  "license": "MIT",
+
   "scripts": {
     "start": "node app"
   },
+  "main": "app.js",
+
   "dependencies": {
     "async": "*",
     "express.io": ">= 1.1.8",
@@ -14,21 +20,21 @@
     "twitter": "*",
     "languagedetect": "*"
   },
-  "description": "Produce tweets with markov chains over revious twitted content",
-  "main": "app.js",
   "devDependencies": {
     "coffee-script": "*",
+    "grunt": "~0.4.0",
+    "grunt-contrib-jshint": "~0.1.*",
     "grunt-shell": "*"
   },
+
   "repository": {
     "type": "git",
     "url": "git://github.com/vincent/twittersay.git"
   },
+
   "keywords": [
     "twitter",
     "markov",
     "bot"
-  ],
-  "author": "Vincent Lark <vincent.lark@gmail.com>",
-  "license": "MIT"
+  ]
 }
