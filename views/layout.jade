@@ -48,7 +48,18 @@ html
       a(href="/docs")
         small Source documentation
 
+      br
+      br
+      a(href="https://twitter.com/share", class="twitter-share-button", data-size="large", data-dnt="true") Tweet
+      
+      br
+      br
+      iframe(src="http://ghbtns.com/github-btn.html?user=vincent&repo=twittersay&type=watch&size=large", allowtransparency="true", frameborder="0", scrolling="0", width="200", height="50")
+
     block content
 
     script(type='text/javascript')
       $('#countries').chosen();
+      
+      // twitter button
+      !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
