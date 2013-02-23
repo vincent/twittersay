@@ -67,7 +67,7 @@ html
     script(type='text/javascript')
       $('#countries').chosen();
       
-      $("#wordcount").flipCounter("startAnimation", { // scroll counter from the current number to the specified number
+      $("#wordcount, #wordperminute").flipCounter({ // scroll counter from the current number to the specified number
         imagePath: "/javascripts/flipCounter/flipCounter-medium.png",
         number: 0,
         end_number: 0
