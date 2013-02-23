@@ -12,8 +12,11 @@ block content
     
     // Listen for broadcast events
     sio.on('stats', function(data) {
-      $('#wordcount').html(data.wordcount + ' words indexed');
+      //$('#wordcount').html(data.wordcount + ' words indexed');
       $('#wordperminute').html(data.wordperminute + ' per minute');
+      
+      $("#wordcount").flipCounter("setNumber", $("#wordcount").flipCounter('getNumber'));
+      
       
     });
 
