@@ -25,9 +25,14 @@ The webapp continuously display random, generated tweets.
 $ ./app.js # or npm start
 ```
 
+## Requirements
+You need a Redis instance to run the harvester and/or the webapp.
+
 ## Install
 ```
 $ npm install docserv
 $ cp config.js.sample config.js
 ```
+
+## Configuration
 Edit the ```config.js``` file.

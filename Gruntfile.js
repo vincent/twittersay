@@ -7,6 +7,11 @@ module.exports = function(grunt) {
       files: '<config:lint.files>',
       tasks: 'default'
     },
+    copy: {
+      configfile: {
+        files: [ {src: ['config.js.sample'], dest: 'config.js' } ]
+      }
+    },
     shell: {
       // Generate documentation
       makeDocs: {
@@ -38,9 +43,10 @@ module.exports = function(grunt) {
 
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-shell');
 
-  // Default task
-  grunt.registerTask('default', ['jshint', 'shell']);
+  grunt.registerTask('default', ['jshint', 'shell:makeDocs']);
+  grunt.registerTask('install', ['jshint', 'shell:makeDocs', 'copy:configfile']);
 
 };

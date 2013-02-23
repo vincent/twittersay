@@ -5,12 +5,10 @@
   "description": "Produce tweets with markov chains over revious twitted content",
   "author": "Vincent Lark <vincent.lark@gmail.com>",
   "license": "MIT",
-
   "scripts": {
     "start": "node app"
   },
   "main": "app.js",
-
   "dependencies": {
     "async": "*",
     "express.io": ">= 1.1.8",
@@ -24,14 +22,13 @@
     "coffee-script": "*",
     "grunt": "~0.4.0",
     "grunt-contrib-jshint": "~0.1.*",
-    "grunt-shell": "*"
+    "grunt-shell": "*",
+    "grunt-contrib-copy": "~0.4.0"
   },
-
   "repository": {
     "type": "git",
     "url": "git://github.com/vincent/twittersay.git"
   },
-
   "keywords": [
     "twitter",
     "markov",
