@@ -92,7 +92,7 @@
     path    = require('path'),
     async   = require('async'),
     ts      = require('twittersay-core'),
-    tsgen   = ts.generator(conf),
+    tsgen   = new ts.Generator(conf),
     tsdb    = ts.db(conf);
 
 // quick & dirty modules
@@ -116,7 +116,9 @@ app.configure(function(){
   }));
 
   app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, 'public'), {
+    maxAge: 31557600000
+  }));
 });
 
 app.configure('development', function(){
@@ -129,7 +131,23 @@ var rooms = [];
 
 var wordcount = 0;
 
-var last = {};</code></pre>
+var last = {};
+
+// send stats
+var stats = {};
+var harvesterStats = function(callback) {
+  tsdb.get('twittersay-core-word-count', function(err, wordcount){
+    if (err) { return console.log(err); }
+    stats.wordcount = wordcount;
+    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
+      stats.wordcount = wordcount;
+      callback({
+        wordcount: stats.wordcount || 0,
+        wordperminute: stats.wordperminute || 0
+      });
+    });
+  });
+};</code></pre>
           </div>
           <section id="cron">
             <h1>cron</h1>
@@ -170,34 +188,22 @@ var last = {};</code></pre>
     },
     function(err) {
       //console.log('All rooms broadcasted.');
+      
+      // send stats with broadcast
+      harvesterStats(function(stats){
+        app.io.broadcast('stats', stats);
+      });
+
+      // re-schedule
+      setTimeout(cron, conf.webapp.wait);
     }
   );
-  
-  // send wordcount with broadcast
-  tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) { return console.log(err); }
-    if (count === wordcount)  { return;</code></pre>
-          </div>
-          <section>
-            <h1></h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-success radius ctx-type"></div>
-            </p>
-          </section>
-          <div class="description"><p>console.log('no new words');</p> 
-            <pre><code class="language-javascript">}
     
-    wordcount = count;
-    app.io.broadcast('wordcount', {wordcount: count });
-  });
-  
-  // run cron every 2s
-  setTimeout(cron, 2000);
 };
 
 // launch cron now
 cron();
+
 
 // io routes
 app.io.route('ready', function(req) {
@@ -206,10 +212,9 @@ app.io.route('ready', function(req) {
   // subscribe user to channel
   req.io.join(req.data.name);
 
-  // send him wordcount
-  tsdb.get('twittersay-core-word-count', function(err, count){
-    if (err) { return console.log(err); }
-    req.io.emit('wordcount', {wordcount: count });
+  // send him stats
+  harvesterStats(function(stats){
+    req.io.emit('stats', stats);
   });
 
   // send him last msgs in this room

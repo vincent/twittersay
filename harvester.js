@@ -9,7 +9,8 @@ var conf      = require('./config'),
     util      = require('util'),
     twitter   = require('twitter'),
     optimist  = require('optimist'),
-    tsharv    = require('twittersay-core').harvester(conf);
+    ts        = require('twittersay-core'),
+    tsharv    = new ts.TwitterHarvester(conf);
   
 // quick & dirty modules
 var locations = require('locations');
@@ -90,4 +91,4 @@ for (var i=0; i < filters.length; i++) {
   }
 }
   
-tsharv.initTwitterStream(streamOptions);
+tsharv.start(streamOptions);

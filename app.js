@@ -10,8 +10,7 @@ var conf    = require('./config'),
     path    = require('path'),
     async   = require('async'),
     ts      = require('twittersay-core'),
-    tsgen   = new ts.Generator(conf),
-    tsdb    = ts.db(conf);
+    tsgen   = new ts.Generator(conf);
 
 // quick & dirty modules
 var html = require('htmlify');
@@ -52,17 +51,12 @@ var wordcount = 0;
 var last = {};
 
 // send stats
-var stats = {};
 var harvesterStats = function(callback) {
-  tsdb.get('twittersay-core-word-count', function(err, wordcount){
-    if (err) { return console.log(err); }
-    stats.wordcount = wordcount;
-    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
-      stats.wordcount = wordcount;
-      callback({
-        wordcount: stats.wordcount || 0,
-        wordperminute: stats.wordperminute || 0
-      });
+  tsgen.stats(function(stats){
+    stats = stats || {};
+    callback({
+      wordperminute: stats['word-per-minute'] || 0,
+      wordcount: stats['word-count'] || 0
     });
   });
 };

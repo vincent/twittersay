@@ -69,7 +69,19 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#generator"><i class="alert alert-info"></i>generator</a>
+              <li><a href="#Common"><i class="alert alert-info"></i>Common</a>
+              </li>
+              <li><a href="#_statsTick"><i class="alert alert-info"></i>_statsTick</a>
+              </li>
+              <li><a href="#stats"><i class="alert alert-info"></i>stats</a>
+              </li>
+              <li><a href="#Generator"><i class="alert alert-info"></i>Generator</a>
+              </li>
+              <li><a href="#randomWord"><i class="alert alert-info"></i>randomWord</a>
+              </li>
+              <li><a href="#nextWord"><i class="alert alert-info"></i>nextWord</a>
+              </li>
+              <li><a href="#randomSentance"><i class="alert alert-info"></i>randomSentance</a>
               </li>
               <li><a href="#harvester"><i class="alert alert-info"></i>harvester</a>
               </li>
@@ -77,11 +89,91 @@
           </div>
         </div>
         <div class="span9">
-          <section id="generator">
-            <h1>generator</h1>
+          <section id="Common">
+            <h1>Common</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">function</div><span>generator()</span>
+              <div class="label label-info radius ctx-type">function</div><span>Common()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>conf</td>
+                <td>Object</td>
+                <td>Configuration object</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>@class</p> 
+            <pre><code class="language-javascript">var Common = function(conf) {
+  this._conf = {
+    redis: conf.redis || {},
+    prefix: conf.prefix || 'twittersay-core'
+  }; 
+  this._statsKey = this._conf.prefix + '-stats';
+  this._redis = Redis.createClient(this._conf.redis);
+};</code></pre>
+          </div>
+          <section id="_statsTick">
+            <h1>_statsTick</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Common.prototype._statsTick()</span>
+            </p>
+          </section>
+          <div class="description"><p>Stats tick<br />Update stats counters</p> 
+            <pre><code class="language-javascript">Common.prototype._statsTick = function() {
+  var self = this;
+  this._redis.hget(this.statsKey, 'word-last-minute', function(err, cnt){
+    self._redis.hset(this.statsKey, 'word-per-minute', cnt);
+    self._redis.set(this.statsKey, 'word-last-minute', 0);
+  });
+};</code></pre>
+          </div>
+          <section id="stats">
+            <h1>stats</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Common.prototype.stats()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>callback(stats)</td>
+                <td>Function</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>Stats getter</p> 
+            <pre><code class="language-javascript">Common.prototype.stats = function(callback) {
+  this.redis.hgetall(this._statsKey, function(err, stats){
+    if (err) { return console.log(err); }
+    callback(stats);
+  });
+};</code></pre>
+          </div>
+          <section id="Generator">
+            <h1>Generator</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">function</div><span>Generator()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -100,60 +192,138 @@
               </tr>
             </tbody>
           </table>
-          <div class="description"><p>The generator can create a sentence from indexed words</p> 
-            <pre><code class="language-javascript">var generator = function(conf) {
-  
-  // the object we'll return
-  var gene = {};
+          <div class="description"><p>The generator creates a sentence with indexed words</p> 
+            <pre><code class="language-javascript">var Generator = function(conf) {
+  Generator.super_.call(this, conf);
+};
+util.inherits(Generator, Common);
 
-  // instanciate a redis client
-  gene.redis = Redis.createClient(conf.redis);
-  
-  gene.randomWord = function(callback) {
-    this.redis.randomkey(function(result, key) {
-      //console.log('randomWord', result, key);
-      callback(key);
-    });
-  };
+// Languages I know
+Generator.prototype.knownLanguages = [
+  'english','french','german','italian',
+  'arabic','bulgarian','czech','danish','dutch',
+  'estonian','farsi','finnish','hausa','hawaiian',
+  'hindi','hungarian','icelandic','indonesian',
+  'kazakh','azeri','bengali'
+];</code></pre>
+          </div>
+          <section id="randomWord">
+            <h1>randomWord</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Generator.prototype.randomWord()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>callback(word)</td>
+                <td>Function</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>randomWord gives a random word</p> 
+            <pre><code class="language-javascript">Generator.prototype.randomWord = function(callback) {
+  this._redis.randomkey(function(result, key) {
+    //console.log('randomWord', result, key);
+    callback(key);
+  });
+};</code></pre>
+          </div>
+          <section id="nextWord">
+            <h1>nextWord</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Generator.prototype.nextWord()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>callback(next)</td>
+                <td>Function</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>nextWord find a follower</p> 
+            <pre><code class="language-javascript">Generator.prototype.nextWord = function(word, callback) {
+  var self = this;
+  this._redis.exists(word, function(err, data) {
+    if (data == null) { return callback(null); }
 
-  gene.nextWord = function(word, callback) {
-    this.redis.exists(word, function(err, data) {
-      if (data == null) { return callback(null); }
-      // TODO: not sure of this
-      gene.redis.hgetall(word, function(result, data) {
-        var sum = 0;
-        for (var i in data) {
-          sum += data[i];
-        }
-        var rand = Math.floor(Math.random()*sum+1);
-        var partial_sum = 0;
-        var next = null;
-        for (var j in data) {
-          partial_sum += data[j];
-          if (partial_sum >= rand) { next = j; }
-        }
-        callback(next);
-      });
-    });
-  };
-
-  gene.randomSentance = function(options, callback, word) {
-    var sentance = [];
-    this.randomWord( function(word) {
-      function build(next) {
-        sentance.push(!next || sentance.length > 15 ? '.' : ' ' + next);
-      
-        if (sentance.length > 5 && /(\.|!|\?)/.exec(sentance)) {
-          callback(null, sentance.join(''));
-        } else {
-          // TODO: not sure of this
-          gene.nextWord(next, build);
-        }
+    self._redis.hgetall(word, function(result, data) {
+      var sum = 0;
+      for (var i in data) {
+        sum += data[i];
       }
-      build(word);
+      var rand = Math.floor(Math.random()*sum+1);
+      var partial_sum = 0;
+      var next = null;
+      for (var j in data) {
+        partial_sum += data[j];
+        if (partial_sum >= rand) { next = j; }
+      }
+      callback(next);
     });
-  };
-  return gene;
+  });
+};</code></pre>
+          </div>
+          <section id="randomSentance">
+            <h1>randomSentance</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>Generator.prototype.randomSentance()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>callback(next)</td>
+                <td>Function</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"><p>randomSentance Generate a whole sentence</p> 
+            <pre><code class="language-javascript">Generator.prototype.randomSentance = function(options, callback, word) {
+  var sentance = [];
+  var self = this;
+  this.randomWord( function(word) {
+    function build(next) {
+      sentance.push(!next || sentance.length > 15 ? '.' : ' ' + next);
+      
+      if (sentance.length > 5 && /(\.|!|\?)/.exec(sentance)) {
+        callback(null, sentance.join(''));
+      } else {
+        // TODO: not sure of this
+        self.nextWord(next, build);
+      }
+    }
+    build(word);
+  });
 };</code></pre>
           </div>
           <section id="harvester">
@@ -182,87 +352,81 @@
           <div class="description"><p>The harvester index words from Twitter, with optional filters</p> 
             <pre><code class="language-javascript">var harvester = function(conf) {
   
-  // the object we'll return
-  var harv = {};
+// the object we'll return
+var harv = {};
   
-  var Twitter = require('twitter');
+var Twitter = require('twitter');
   
-  // instanciate a twitter client
-  harv.twit = new Twitter(conf.twitter);
+// instanciate a twitter client
+harv.twit = new Twitter(conf.twitter);
 
-  // instanciate a redis client
-  harv.redis = Redis.createClient(conf.redis);
+// instanciate a redis client
+harv.redis = Redis.createClient(conf.redis);
 
-  harv.clean = function(text) {
-    text = text.replace(/[@#][^ ]+/g, '', text);
-    return text;
-  };
+harv.clean = function(text) {
+  text = text.replace(/[@#][^ ]+/g, '', text);
+  return text;
+};
 
-  // harvest twitter with options
-  harv.initTwitterStream = function(streamOptions) {
-    this.twit.verifyCredentials(function(data) {
-      //console.log(util.inspect(data));
-    });
+// harvest twitter with options
+harv.initTwitterStream = function(streamOptions) {
+  this.twit.verifyCredentials(function(data) {
+    //console.log(util.inspect(data));
+  });
     
-    var onStream = function(stream) {
-      stream.on('data', function(data) {
-        if (!data.text) { return; }
+  var onStream = function(stream) {
+    stream.on('data', function(data) {
+      if (!data.text) { return; }
 
-        if (streamOptions.lang) {
-          var detected = lng.detect(harv.clean(data.text), 1);
-          if (!detected || !detected.length || !detected[0].length || detected[0][0] !== streamOptions.lang || detected[0][1] < 0.2) {
-            //console.log('discard text, was in ' + detected[0][0], 'not ' + streamOptions.lang);
-            return;
-          }
-          console.log(detected);
+      if (streamOptions.lang) {
+        var detected = lng.detect(harv.clean(data.text), 1);
+        if (!detected || !detected.length || !detected[0].length || detected[0][0] !== streamOptions.lang || detected[0][1] < 0.2) {
+          //console.log('discard text, was in ' + detected[0][0], 'not ' + streamOptions.lang);
+          return;
         }
+        //console.log(detected);
+      }
 
-        var words = data.text.split(/\s+/);
-        for(var j = 0; j < words.length - 1; j++) {
-          harv.redis.hincrby(words[j], words[j+1], 1 + Math.sqrt(data.retweet_count));
-        }
+      var words = data.text.split(/\s+/);
+      for(var j = 0; j < words.length - 1; j++) {
+        harv.redis.hincrby(words[j], words[j+1], 1 + Math.sqrt(data.retweet_count));
+        harv.words_in_last_second++;
+      }
         
-        harv.redis.incrby('twittersay-core-word-count', words.length);
+      harv.redis.incrby('twittersay-core-word-count', words.length);
+      harv.redis.incrby('twittersay-core-word-last-minute', words.length);
       
-        return streamOptions.debug ? console.log(words.length + ' words :', data.text) : process.stdout.write('.');
-      });
+      return streamOptions.debug ? console.log(words.length + ' words :', data.text) : process.stdout.write('.');
+    });
 
-      stream.on('error', function(data) {
-        console.log('onerror: ', data);
-      });
-    };
+    stream.on('error', function(data) {
+      console.log('onerror: ', data);
+    });
+  };
 
-    if (typeof streamOptions === 'object' && streamOptions.track || streamOptions.follow || streamOptions.locations) {
-      this.twit.stream('statuses/filter', streamOptions, onStream);
-      console.log("I'm listenning to twitter with filters", util.inspect(streamOptions));
-    } else {
-      this.twit.stream('statuses/sample', onStream);
-      console.log("I'm listenning to twitter samples, use parameters to customize");
-      console.log("Each dot represents an indexed tweet: ");
-    }
-  };
+  if (typeof streamOptions === 'object' && streamOptions.track || streamOptions.follow || streamOptions.locations) {
+    this.twit.stream('statuses/filter', streamOptions, onStream);
+    console.log("I'm listenning to twitter with filters", util.inspect(streamOptions));
+  } else {
+    this.twit.stream('statuses/sample', onStream);
+    console.log("I'm listenning to twitter samples, use parameters to customize");
+    console.log("Each dot represents an indexed tweet: ");
+  }
+};
   
-  harv.get = function(key, callback) {
-    harv.redis.get(key, callback);
-  };
+harv.get = function(key, callback) {
+  harv.redis.get(key, callback);
+};
   
-  harv.knownLanguages = [
-    'english','french','german','italian',
-    'arabic','bulgarian','czech','danish','dutch',
-    'estonian','farsi','finnish','hausa','hawaiian',
-    'hindi','hungarian','icelandic','indonesian',
-    'kazakh','azeri','bengali'
-  ];
-  
-  return harv;
+
+return harv;
 };
 
 
 module.exports = {
-  generator: generator,
+  Generator: Generator,
   harvester: harvester,
-  
-  db: function(conf){
+  db: function(conf) {
     return Redis.createClient(conf.redis);
   }
 };</code></pre>
