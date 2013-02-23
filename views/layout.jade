@@ -11,9 +11,12 @@ html
         
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/chosen.css')
+    
     script(src='/javascripts/jquery-1.6.2.min.js')
+    script(src='/javascripts/jquery.peity.min.js')
     script(src='/javascripts/chosen.jquery.min.js')
     script(src='/socket.io/socket.io.js')
+    
   body
     h1= title
     
@@ -43,9 +46,11 @@ html
 
       br
       br
-      div#wordcount
+      span#wordcount_history
+      em#wordcount
       br
-      div#wordperminute
+      span#wordperminute_history
+      em#wordperminute
       
       br
       a(href="/docs")
@@ -64,5 +69,8 @@ html
     script(type='text/javascript')
       $('#countries').chosen();
       
+      $("#wordcount_history").peity("line", { width: 64 })
+      $("#wordperminute_history").peity("line", { width: 64 })
+
       // twitter button
       !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");

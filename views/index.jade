@@ -11,9 +11,19 @@ block content
     sio.emit('ready', !{roomOptions});
     
     // Listen for broadcast events
+    var stats = {};
     sio.on('stats', function(data) {
+      stats.wordcount = stats.wordcount || [];
+      stats.wordperminute = stats.wordperminute || [];
+
+      stats.wordcount.push(data.wordcount);
+      stats.wordperminute.push(data.wordperminute);
+      
       $('#wordcount').html(data.wordcount + ' words indexed');
       $('#wordperminute').html(data.wordperminute + ' per minute');
+      
+      $("#wordcount_history").text(stats.wordcount.join(',')).change();
+      $("#wordperminute_history").text(stats.wordperminute.join(',')).change();
     });
 
     var handleMessage = function(data) {
