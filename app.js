@@ -10,7 +10,7 @@ var conf    = require('./config'),
     path    = require('path'),
     async   = require('async'),
     ts      = require('twittersay-core'),
-    tsgen   = ts.generator(conf),
+    tsgen   = new ts.Generator(conf),
     tsdb    = ts.db(conf);
 
 // quick & dirty modules
@@ -50,6 +50,22 @@ var rooms = [];
 var wordcount = 0;
 
 var last = {};
+
+// send stats
+var stats = {};
+var harvesterStats = function(callback) {
+  tsdb.get('twittersay-core-word-count', function(err, wordcount){
+    if (err) { return console.log(err); }
+    stats.wordcount = wordcount;
+    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
+      stats.wordcount = wordcount;
+      callback({
+        wordcount: stats.wordcount || 0,
+        wordperminute: stats.wordperminute || 0
+      });
+    });
+  });
+};
 
 /**
  * Our spammy cron delivers 1 message in each room (=options) every 2 seconds
@@ -101,18 +117,6 @@ var cron = function(){
 // launch cron now
 cron();
 
-// send stats
-function harvesterStats(callback) {
-  tsdb.get('twittersay-core-word-count', function(err, wordcount){
-    if (err) { return console.log(err); }
-    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
-      callback({
-        wordcount: wordcount || '~',
-        wordperminute: wordperminute || '~'
-      });
-    });
-  });
-}
 
 // io routes
 app.io.route('ready', function(req) {
