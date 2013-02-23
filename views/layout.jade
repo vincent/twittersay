@@ -13,7 +13,6 @@ html
     link(rel='stylesheet', href='/stylesheets/chosen.css')
     script(src='/javascripts/jquery-1.6.2.min.js')
     script(src='/javascripts/chosen.jquery.min.js')
-    script(src='/javascripts/flipCounter/jquery.flipCounter.1.2.pack.js');
     script(src='/socket.io/socket.io.js')
   body
     h1= title
@@ -45,10 +44,8 @@ html
       br
       br
       div#wordcount
-        input(type="hidden", name="wordcount-value", value="~")
       br
       div#wordperminute
-        input(type="hidden", name="wordperminute-value", value="~")
       
       br
       a(href="/docs")
@@ -66,13 +63,6 @@ html
 
     script(type='text/javascript')
       $('#countries').chosen();
-      
-      $("#wordcount, #wordperminute").flipCounter({ // scroll counter from the current number to the specified number
-        imagePath: "/javascripts/flipCounter/flipCounter-medium.png",
-        number: 0,
-        end_number: 0
-      });
-      
       
       // twitter button
       !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
