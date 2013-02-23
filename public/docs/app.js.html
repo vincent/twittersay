@@ -73,80 +73,14 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#conf"><i class="alert alert-success"></i>conf</a>
-              </li>
               <li><a href="#cron"><i class="alert alert-info"></i>cron</a>
+              </li>
+              <li><a href="#server"><i class="alert alert-success"></i>server</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="conf">
-            <h1>conf</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-success radius ctx-type">declaration</div><span>conf</span>
-            </p>
-          </section>
-          <div class="description"><p>Module dependencies.</p> 
-            <pre><code class="language-javascript">var conf    = require('./config'),
-    routes  = require('./routes'),
-    express = require('express.io'),
-    http    = require('http'),
-    path    = require('path'),
-    async   = require('async'),
-    ts      = require('twittersay-core'),
-    tsgen   = new ts.Generator(conf);
-
-// quick & dirty modules
-var html = require('htmlify');
-
-
-var app = express();
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser(conf.webapp.secret));
-
-  app.use(express.session({
-    secret: conf.webapp.secret,
-    maxAge: new Date(Date.now() + 7200000) // 2h Session lifetime
-  }));
-
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public'), {
-    maxAge: 31557600000
-  }));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler());
-});
-
-app.http().io();
-
-var rooms = [];
-
-var wordcount = 0;
-
-var last = {};
-
-// send stats
-var harvesterStats = function(callback) {
-  tsgen.stats(function(stats){
-    stats = stats || {};
-    callback({
-      wordperminute: stats['word-per-minute'] || 0,
-      wordcount: stats['word-count'] || 0
-    });
-  });
-};</code></pre>
-          </div>
           <section id="cron">
             <h1>cron</h1>
             <h5 class="subheader"></h5>
@@ -154,7 +88,7 @@ var harvesterStats = function(callback) {
               <div class="label label-info radius ctx-type">function</div><span>cron()</span>
             </p>
           </section>
-          <div class="description"><p>Our spammy cron delivers 1 message in each room (=options) every 2 seconds</p> 
+          <div class="description"><p>Our spammy cron delivers 1 message in each room (=options) every <code>conf.webapp.wait</code> seconds</p> 
             <pre><code class="language-javascript">var cron = function(){
   // compute message for each room, asynchronously
   async.forEach(rooms,
@@ -200,11 +134,17 @@ var harvesterStats = function(callback) {
 };
 
 // launch cron now
-cron();
-
-
-// io routes
-app.io.route('ready', function(req) {
+cron();</code></pre>
+          </div>
+          <section>
+            <h1></h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type"></div>
+            </p>
+          </section>
+          <div class="description"><p>IO routes</p> 
+            <pre><code class="language-javascript">app.io.route('ready', function(req) {
   if (!req.data.name) { return console.log('No room name provided'); }
   
   // subscribe user to channel
@@ -223,16 +163,30 @@ app.io.route('ready', function(req) {
     rooms.push(req.data);
     console.log('new room:', req.data);
   }
-});
-
-// express routes
-app.get('/', routes.index);
+});</code></pre>
+          </div>
+          <section>
+            <h1></h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type"></div>
+            </p>
+          </section>
+          <div class="description"><p>Express routes</p> 
+            <pre><code class="language-javascript">app.get('/', routes.index);
 app.get('/lang/:lang', routes.index);
 app.get('/hashtag/:hashtag', routes.index);
-app.get('/country/:country', routes.index);
-
-// to listen and serve
-var server = app.listen(conf.webapp.port, function(){
+app.get('/country/:country', routes.index);</code></pre>
+          </div>
+          <section id="server">
+            <h1>server</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">declaration</div><span>server</span>
+            </p>
+          </section>
+          <div class="description"><p>Bind webserver</p> 
+            <pre><code class="language-javascript">var server = app.listen(conf.webapp.port, function(){
   console.log("Express server listening on " + server.address().address + ":" + server.address().port);
 });</code></pre>
           </div>

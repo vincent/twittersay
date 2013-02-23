@@ -73,37 +73,12 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#conf"><i class="alert alert-success"></i>conf</a>
-              </li>
               <li><a href="#argv"><i class="alert alert-success"></i>argv</a>
               </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="conf">
-            <h1>conf</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-success radius ctx-type">declaration</div><span>conf</span>
-            </p>
-          </section>
-          <div class="description"><p>Module dependencies.</p> 
-            <pre><code class="language-javascript">var conf      = require('./config'),
-    fs        = require('fs'),
-    sys       = require('sys'),
-    util      = require('util'),
-    twitter   = require('twitter'),
-    optimist  = require('optimist'),
-    ts        = require('twittersay-core'),
-    tsharv    = new ts.TwitterHarvester(conf);
-  
-// quick & dirty modules
-var locations = require('locations');
-
-// TODO: trash this
-var redis = require('redis').createClient();</code></pre>
-          </div>
           <section id="argv">
             <h1>argv</h1>
             <h5 class="subheader"></h5>
@@ -183,9 +158,17 @@ for (var i=0; i < filters.length; i++) {
   if (argv[filters[i]]) {
     streamOptions[filters[i]] = argv[filters[i]];
   }
-}
-  
-tsharv.start(streamOptions);</code></pre>
+}</code></pre>
+          </div>
+          <section>
+            <h1></h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type"></div>
+            </p>
+          </section>
+          <div class="description"><p>Start harvesting</p> 
+            <pre><code class="language-javascript">tsharv.start(streamOptions);</code></pre>
           </div>
         </div>
       </div>

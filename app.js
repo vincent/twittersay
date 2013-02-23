@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
 var conf    = require('./config'),
     routes  = require('./routes'),
     express = require('express.io'),
@@ -62,8 +59,8 @@ var harvesterStats = function(callback) {
 };
 
 /**
- * Our spammy cron delivers 1 message in each room (=options) every 2 seconds
- */
+* Our spammy cron delivers 1 message in each room (=options) every `conf.webapp.wait` seconds
+*/
 var cron = function(){
   // compute message for each room, asynchronously
   async.forEach(rooms,
@@ -112,7 +109,9 @@ var cron = function(){
 cron();
 
 
-// io routes
+/**
+* IO routes
+*/
 app.io.route('ready', function(req) {
   if (!req.data.name) { return console.log('No room name provided'); }
   
@@ -134,13 +133,17 @@ app.io.route('ready', function(req) {
   }
 });
 
-// express routes
+/**
+* Express routes
+*/
 app.get('/', routes.index);
 app.get('/lang/:lang', routes.index);
 app.get('/hashtag/:hashtag', routes.index);
 app.get('/country/:country', routes.index);
 
-// to listen and serve
+/**
+* Bind webserver
+*/
 var server = app.listen(conf.webapp.port, function(){
   console.log("Express server listening on " + server.address().address + ":" + server.address().port);
 });

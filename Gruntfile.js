@@ -10,7 +10,7 @@ module.exports = function(grunt) {
     shell: {
       // Generate documentation
       makeDocs: {
-        command: 'ls && doxx --source . --ignore "public,static,views,templates,node_modules,grunt,config" --target public/docs'
+        command: 'rm -Rf public/docs/* && doxx --source . --ignore "public,static,views,templates,node_modules,grunt,config" --target public/docs'
       }
     },
     jshint: {
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-shell');
 
-  // Default task(s).
+  // Default task
   grunt.registerTask('default', ['jshint', 'shell']);
 
 };

@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
+// modules dependencies
 var conf      = require('./config'),
     fs        = require('fs'),
     sys       = require('sys'),
@@ -90,5 +88,8 @@ for (var i=0; i < filters.length; i++) {
     streamOptions[filters[i]] = argv[filters[i]];
   }
 }
-  
+
+/**
+* Start harvesting
+*/
 tsharv.start(streamOptions);
