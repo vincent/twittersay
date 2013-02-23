@@ -84,14 +84,8 @@ var cron = function(){
     function(err) {
       //console.log('All rooms broadcasted.');
       
-      // send wordcount with broadcast
-      tsdb.get('twittersay-core-word-count', function(err, count){
-        if (err) { return console.log(err); }
-        if (count === wordcount)  { return; /* console.log('no new words');*/ }
-    
-        wordcount = count;
-        app.io.broadcast('wordcount', {wordcount: count });
-      });
+      // send stats with broadcast
+      sendStats(app.io);
 
       // re-schedule
       setTimeout(cron, conf.webapp.wait);
@@ -103,6 +97,19 @@ var cron = function(){
 // launch cron now
 cron();
 
+// send stats
+function sendStats(ioreq) {
+  tsdb.get('twittersay-core-word-count', function(err, wordcount){
+    if (err) { return console.log(err); }
+    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
+      ioreq.emit('stats', {
+        wordcount: wordcount || '~',
+        wordperminute: wordperminute || '~'
+      });
+    });
+  });
+}
+
 // io routes
 app.io.route('ready', function(req) {
   if (!req.data.name) { return console.log('No room name provided'); }
@@ -111,15 +118,7 @@ app.io.route('ready', function(req) {
   req.io.join(req.data.name);
 
   // send him stats
-  tsdb.get('twittersay-core-word-count', function(err, wordcount){
-    if (err) { return console.log(err); }
-    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
-      req.io.emit('stats', {
-        wordcount: wordcount || '~',
-        wordperminute: wordperminute || '~'
-      });
-    });
-  });
+  sendStats(req.io);
 
   // send him last msgs in this room
   req.io.emit('messages', last[req.data.name]);
