@@ -15,7 +15,7 @@ block content
       //$('#wordcount').html(data.wordcount + ' words indexed');
       $('#wordperminute').html(data.wordperminute + ' per minute');
       
-      $("#wordcount").flipCounter("setNumber", parseInt($("#wordcount").flipCounter('getNumber')) + data.wordcount);
+      $("#wordcount").flipCounter("setNumber", parseInt($("#wordcount").flipCounter('getNumber')) + parseInt(data.wordcount));
       
       
     });
