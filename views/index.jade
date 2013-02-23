@@ -11,8 +11,10 @@ block content
     sio.emit('ready', !{roomOptions});
     
     // Listen for broadcast events
-    sio.on('wordcount', function(data) {
+    sio.on('stats', function(data) {
       $('#wordcount').html(data.wordcount + ' words indexed');
+      $('#wordperminute').html(data.wordperminute + ' per minute');
+      
     });
 
     var handleMessage = function(data) {

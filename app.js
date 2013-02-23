@@ -110,10 +110,15 @@ app.io.route('ready', function(req) {
   // subscribe user to channel
   req.io.join(req.data.name);
 
-  // send him wordcount
-  tsdb.get('twittersay-core-word-count', function(err, count){
+  // send him stats
+  tsdb.get('twittersay-core-word-count', function(err, wordcount){
     if (err) { return console.log(err); }
-    req.io.emit('wordcount', {wordcount: count });
+    tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
+      req.io.emit('stats', {
+        wordcount: wordcount || '~',
+        wordperminute: wordperminute || '~'
+      });
+    });
   });
 
   // send him last msgs in this room
