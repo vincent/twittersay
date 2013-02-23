@@ -85,7 +85,9 @@ var cron = function(){
       //console.log('All rooms broadcasted.');
       
       // send stats with broadcast
-      sendStats(app.io);
+      harvesterStats(function(stats){
+        app.io.broadcast('stats', stats);
+      });
 
       // re-schedule
       setTimeout(cron, conf.webapp.wait);
@@ -98,11 +100,11 @@ var cron = function(){
 cron();
 
 // send stats
-function sendStats(ioreq) {
+function harvesterStats(callback) {
   tsdb.get('twittersay-core-word-count', function(err, wordcount){
     if (err) { return console.log(err); }
     tsdb.get('twittersay-core-word-per-minute', function(err, wordperminute){
-      ioreq.emit('stats', {
+      callback({
         wordcount: wordcount || '~',
         wordperminute: wordperminute || '~'
       });
@@ -118,7 +120,9 @@ app.io.route('ready', function(req) {
   req.io.join(req.data.name);
 
   // send him stats
-  sendStats(req.io);
+  harvesterStats(function(stats){
+    req.io.emit('stats', stats);
+  });
 
   // send him last msgs in this room
   req.io.emit('messages', last[req.data.name]);
