@@ -15,7 +15,9 @@ block content
     sio.on('stats', function(data) {
       stats.wordperminute = stats.wordperminute || [];
 
+      // keep the last 100 values
       stats.wordperminute.push(data.wordperminute);
+      stats.wordperminute = stats.wordperminute.slice(-5, data.wordperminute.length);
       
       $('#wordcount').html(data.wordcount + ' words indexed');
       $('#wordperminute').html(data.wordperminute + ' per minute');
