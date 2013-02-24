@@ -8,6 +8,7 @@ trends.topics(1, function(err, topics){
   topicsCache.general = topics || [];
 })
 
+var md5 = require('MD5');
 
 /**
  * Main application route
@@ -16,7 +17,7 @@ exports.index = function(req, res){
   res.render('index', {
     title: 'Twitter says',
     roomOptions: JSON.stringify({
-      name: JSON.stringify(req.params),
+      name: md5(req.url),
 
       tag: req.param('tag', false),
       lang: req.param('lang', false),

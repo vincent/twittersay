@@ -94,7 +94,9 @@ var topicsCache = {};
 
 trends.topics(1, function(err, topics){
   topicsCache.general = topics || [];
-})</code></pre>
+})
+
+var md5 = require('MD5');</code></pre>
           </div>
           <section id="index">
             <h1>index</h1>
@@ -108,7 +110,7 @@ trends.topics(1, function(err, topics){
   res.render('index', {
     title: 'Twitter says',
     roomOptions: JSON.stringify({
-      name: JSON.stringify(req.params),
+      name: md5(req.url),
 
       tag: req.param('tag', false),
       lang: req.param('lang', false),

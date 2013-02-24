@@ -16,7 +16,8 @@
     "optimist": "*",
     "redis": "*",
     "twitter": "*",
-    "languagedetect": "*"
+    "languagedetect": "*",
+    "MD5": "~1.0.3"
   },
   "devDependencies": {
     "coffee-script": "*",
