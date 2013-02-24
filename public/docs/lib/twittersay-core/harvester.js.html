@@ -179,9 +179,7 @@ util.inherits(Harvester, Common);</code></pre>
     if (options.lang) {
       detected = lng.detect(self.clean(data.text), 1);
       if (!detected || !detected.length || !detected[0].length || detected[0][0] !== options.lang || detected[0][1] < 0.2) {
-        if (options.debug) {
-          console.log('discard text, was in ' + detected[0][0], 'not ' + options.lang);
-        }
+        //console.log('discard text, was in ' + detected[0][0], 'not ' + options.lang);
         return;
       }
       // set detected score
