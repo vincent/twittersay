@@ -26,9 +26,10 @@ exports.index = function(req, res){
     locations: require('locations').countries,
 
     languages: {
-      en: 'English',
-      fr: 'Français',
-      de: 'Deusch',
+      english: 'English',
+      french:  'Français',
+      german:  'Deusch',
+      italian: 'Italian'
     },
 
     hashtags: topicsCache.general

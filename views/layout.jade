@@ -36,7 +36,7 @@ html
         ul#languages.category
           each name,code in languages
             li
-              a.location(href='/lang/#{name}', data-lang=#{code}) #{name}
+              a.location(href='/lang/#{code}') #{name}
     
       if locations
         h2 By country
