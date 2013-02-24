@@ -213,6 +213,10 @@ Generator.prototype.knownLanguages = [
   this._redis.exists(word, function(err, data) {
     if (data == null) { return callback(null); }
 
+    // clean mess :/
+    self._redis.hdel(word, 'undefined');
+
+    // over all potential followers
     self._redis.hgetall(word, function(result, data) {
       var sum = 0;
       for (var i in data) {
