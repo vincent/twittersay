@@ -87,7 +87,7 @@
             <h1>Harvester</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">function</div><span>Harvester()</span> -> <span>Object</span>
+              <div class="label label-info radius ctx-type">function</div><span>Harvester()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -100,9 +100,9 @@
             </thead>
             <tbody>
               <tr>
-                <td>conf</td>
+                <td>options</td>
                 <td>Object</td>
-                <td>configuration object with filters</td>
+                <td>&amp; filters</td>
               </tr>
             </tbody>
           </table>
@@ -135,7 +135,7 @@ util.inherits(Harvester, Common);</code></pre>
               </tr>
             </tbody>
           </table>
-          <div class="description"><p>clean Remove mentions and hashtags from text</p> 
+          <div class="description"><p>Remove mentions and hashtags from text</p> 
             <pre><code class="language-javascript">Harvester.prototype.clean = function(text) {
   text = text.replace(/[@#][^ ]+/g, '', text);
   return text;
@@ -164,7 +164,7 @@ util.inherits(Harvester, Common);</code></pre>
               </tr>
             </tbody>
           </table>
-          <div class="description"><p>onStream data handler</p> 
+          <div class="description"><p>Stream handler. Here we cut text in pieces and cook them</p> 
             <pre><code class="language-javascript">Harvester.prototype.onStream = function(stream, options) {
   var self = this;
 
@@ -174,20 +174,43 @@ util.inherits(Harvester, Common);</code></pre>
   stream.on('data', function(data) {
     if (!data.text) { return; }
 
+    // oh. you specified a language ?
+    var detected = 0;
     if (options.lang) {
-      var detected = lng.detect(self.clean(data.text), 1);
+      detected = lng.detect(self.clean(data.text), 1);
       if (!detected || !detected.length || !detected[0].length || detected[0][0] !== options.lang || detected[0][1] < 0.2) {
         //console.log('discard text, was in ' + detected[0][0], 'not ' + streamOptions.lang);
         return;
       }
-      //console.log(detected);
+      // set detected score
+      detected = parseInt(detected[0][1] * 100, 0);
+      //console.log(options.lang, ':', detected);
     }
 
+    var words_in_language = [];
+
+    // dissect words from text
     var words = data.text.split(/\s+/);
-    for(var j = 0; j < words.length - 1; j++) {
+    for(var j = 0; j < words.length; j++) {
       self._redis.hincrby(words[j], words[j+1], 1 + Math.sqrt(data.retweet_count));
+
+      // it's quite sure text is in `options.lang`
+      // let's store that
+      // TODO: exceptions ? smileys, punct, etc..
+      if (options.lang) {
+        words_in_language.push(detected);
+        words_in_language.push(words[j]);
+      }
     }
-        
+
+    if (words_in_language.length) {
+      words_in_language.unshift('lang-' + options.lang);
+      self._redis.zadd(words_in_language, function(err){
+        console.log('words_in_language', words_in_language[0], util.inspect(words_in_language));
+      });
+    }
+    
+    // for stats
     self._redis.hincrby(self._statsKey, 'word-count', words.length);
     self._redis.hincrby(self._statsKey, 'word-last-minute', words.length);
       

@@ -147,11 +147,37 @@ Generator.prototype.knownLanguages = [
             </tbody>
           </table>
           <div class="description"><p>randomWord gives a random word</p> 
-            <pre><code class="language-javascript">Generator.prototype.randomWord = function(callback) {
-  this._redis.randomkey(function(result, key) {
-    //console.log('randomWord', result, key);
-    callback(key);
-  });
+            <pre><code class="language-javascript">Generator.prototype.randomWord = function(callback, options) {
+  var self = this;
+  
+  // if options.lang is specified
+  if (options && options.lang) {
+    // pick random word from this lang set
+    // sad there's not zrandmember ...
+    this._redis.zcard('lang-' + options.lang, function(result, count) {
+      var randIndex = Math.floor(Math.random() * count);
+      // get that word
+      self._redis.zrange('lang-' + options.lang, [ randIndex, randIndex+1 ], function(result, word) {
+        if (word) {
+          callback(word);
+        } else {
+          // damm, no words in %language :/
+          // basic random key
+          self._redis.randomkey(function(result, word) {
+            //console.log('randomWord', result, word);
+            callback(word);
+          });
+        }
+      });
+    });
+
+  // basic random key
+  } else {
+    this._redis.randomkey(function(result, word) {
+      //console.log('randomWord', result, word);
+      callback(word);
+    });
+  }
 };</code></pre>
           </div>
           <section id="nextWord">
@@ -180,6 +206,7 @@ Generator.prototype.knownLanguages = [
           <div class="description"><p>nextWord find a follower</p> 
             <pre><code class="language-javascript">Generator.prototype.nextWord = function(word, callback) {
   var self = this;
+  
   this._redis.exists(word, function(err, data) {
     if (data == null) { return callback(null); }
 
@@ -227,6 +254,8 @@ Generator.prototype.knownLanguages = [
             <pre><code class="language-javascript">Generator.prototype.randomSentance = function(options, callback, word) {
   var sentance = [];
   var self = this;
+  
+  options = options || {};
   this.randomWord( function(word) {
     function build(next) {
       sentance.push(!next || sentance.length > 15 ? '.' : ' ' + next);
@@ -239,7 +268,7 @@ Generator.prototype.knownLanguages = [
       }
     }
     build(word);
-  });
+  }, options);
 };
 
 module.exports = Generator;</code></pre>

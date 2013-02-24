@@ -65,6 +65,7 @@ var cron = function(){
   // compute message for each room, asynchronously
   async.forEach(rooms,
     function(roomSpec, next) {
+      
       // get a random sentance, with room's options
       tsgen.randomSentance(roomSpec, function(err, message){
 

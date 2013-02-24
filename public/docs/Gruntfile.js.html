@@ -91,10 +91,11 @@
 
   // Load plugins
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-shell');
 
-  // Default task
   grunt.registerTask('default', ['jshint', 'shell:makeDocs']);
+  grunt.registerTask('install', ['jshint', 'shell:makeDocs', 'copy:configfile']);
 
 };</code></pre>
           </div>
