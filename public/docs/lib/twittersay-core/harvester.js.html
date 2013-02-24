@@ -189,7 +189,7 @@ util.inherits(Harvester, Common);</code></pre>
       //console.log(options.lang, ':', detected);
     }
 
-    var words_in_language = [];
+    var zaddlog = function(err){ };
 
     // dissect words from text
     var words = data.text.split(/\s+/);
@@ -200,18 +200,8 @@ util.inherits(Harvester, Common);</code></pre>
       // let's store that
       // TODO: exceptions ? smileys, punct, etc..
       if (options.lang) {
-        words_in_language.push(detected);
-        words_in_language.push(words[j]);
+        self._redis.zadd([ 'lang-' + options.lang, detected, words[j] ], zaddlog);
       }
-    }
-
-    if (words_in_language.length) {
-      words_in_language.unshift('lang-' + options.lang);
-      self._redis.zadd(words_in_language, function(err){
-        if (options.debug) {
-          console.log('words_in_language', words_in_language[0], util.inspect(words_in_language));
-        }
-      });
     }
     
     // for stats
