@@ -142,6 +142,15 @@
   this._redis.zcard('lang-french', function(err, cnt){
     self._redis.hset(self._statsKey, 'words-in-french', cnt);
   });
+  this._redis.zcard('lang-english', function(err, cnt){
+    self._redis.hset(self._statsKey, 'words-in-english', cnt);
+  });
+  this._redis.zcard('lang-german', function(err, cnt){
+    self._redis.hset(self._statsKey, 'words-in-german', cnt);
+  });
+  this._redis.zcard('lang-italian', function(err, cnt){
+    self._redis.hset(self._statsKey, 'words-in-italianh', cnt);
+  });
 };</code></pre>
           </div>
           <section id="stats">
