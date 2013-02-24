@@ -19,6 +19,10 @@ a {
 	width: 30%;
 }
 
+.categories #languages li em {
+  font-size: .7em;
+}
+
 #content {
 	margin-left: 30%;
 }
