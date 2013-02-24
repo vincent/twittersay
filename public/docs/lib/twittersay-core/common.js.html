@@ -118,8 +118,9 @@
   this._redis = Redis.createClient(this._conf.redis);
   
   var self = this;
+
   // stats ticker
-  setInterval(function(){ self._statsTick(); }, 1000);
+  setInterval(function(){ self._statsTick(); }, 60 * 1000);
 };</code></pre>
           </div>
           <section id="_statsTick">
@@ -139,7 +140,7 @@
   });
   // by lang
   this._redis.zcard('lang-french', function(err, cnt){
-    self._redis.hset(self._statsKey, 'words_in_french', cnt);
+    self._redis.hset(self._statsKey, 'words-in-french', cnt);
   });
 };</code></pre>
           </div>

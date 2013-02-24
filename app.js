@@ -51,9 +51,15 @@ var last = {};
 var harvesterStats = function(callback) {
   tsgen.stats(function(stats){
     stats = stats || {};
+
     callback({
       wordperminute: stats['word-per-minute'] || 0,
-      wordcount: stats['word-count'] || 0
+      wordcount: stats['word-count'] || 0,
+      
+      langcount_english: stats['words-in-english'] || 0,
+      langcount_italian: stats['words-in-italian'] || 0,
+      langcount_french:  stats['words-in-french']  || 0,
+      langcount_german:  stats['words-in-german']  || 0
     });
   });
 };

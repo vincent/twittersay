@@ -20,6 +20,12 @@ block content
       $('#wordcount').html(data.wordcount + ' words indexed');
       $('#wordperminute').html(data.wordperminute + ' per minute');
       $("#wordperminute_history").text(stats.wordperminute.join(',')).change();
+      
+      $('#langcount_french').html( ' (' + data.langcount_french  + ')');
+      $('#langcount_german').html( ' (' + data.langcount_german  + ')');
+      $('#langcount_english').html(' (' + data.langcount_english + ')');
+      $('#langcount_italian').html(' (' + data.langcount_italian + ')');
+      
     });
 
     var handleMessage = function(data) {
