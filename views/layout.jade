@@ -37,6 +37,7 @@ html
           each name,code in languages
             li
               a.location(href='/lang/#{code}') #{name}
+              em(id='langcount_#{code}')
     
       if locations
         h2 By country
