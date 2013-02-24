@@ -136,7 +136,7 @@ app.io.route('ready', function(req) {
   // register room
   if (rooms.indexOf(req.data.name) === -1) {
     rooms.push(req.data);
-    console.log('new room:', req.data);
+    //console.log('new room:', req.data);
   }
 });
 
