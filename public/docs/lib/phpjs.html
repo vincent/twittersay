@@ -62,7 +62,7 @@
             <li class=""><a href="generate.js.html">generate.js</a></li>
             <li class=""><a href="Gruntfile.js.html">Gruntfile.js</a></li>
             <li class=""><a href="harvester.js.html">harvester.js</a></li>
-            <li class=""><a href="lib/phpjs.html">lib/phpjs</a></li>
+            <li class="active"><a href="lib/phpjs.html">lib/phpjs</a></li>
             <li class=""><a href="routes/index.js.html">routes/index.js</a></li>
             <li class=""><a href="lib/htmlify/index.js.html">lib/htmlify/index.js</a></li>
             <li class=""><a href="lib/locations/index.js.html">lib/locations/index.js</a></li>
@@ -72,101 +72,14 @@
             <li class=""><a href="lib/twittersay-core/generator.js.html">lib/twittersay-core/generator.js</a></li>
             <li class=""><a href="lib/twittersay-core/harvester.js.html">lib/twittersay-core/harvester.js</a></li>
             <li class=""><a href="lib/twittersay-core/index.js.html">lib/twittersay-core/index.js</a></li>
-            <li class="active"><a href="lib/twittersay-core/twitter.js.html">lib/twittersay-core/twitter.js</a></li>
+            <li class=""><a href="lib/twittersay-core/twitter.js.html">lib/twittersay-core/twitter.js</a></li>
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#TwitterHarvester"><i class="alert alert-info"></i>TwitterHarvester</a>
-              </li>
-              <li><a href="#start"><i class="alert alert-info"></i>start</a>
-              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <section id="TwitterHarvester">
-            <h1>TwitterHarvester</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-info radius ctx-type">function</div><span>TwitterHarvester()</span> -> <span>Object</span>
-            </p>
-          </section>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th style="width:20%">Option name</th>
-                <th style="width:20%">Type</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>conf</td>
-                <td>Object</td>
-                <td>configuration object</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="description"><p>@class</p>
-
-<p>The harvester index words from Twitter</p> 
-            <pre><code class="language-javascript">var TwitterHarvester = function(conf) {
-  TwitterHarvester.super_.call(this, conf);
-  
-  // instanciate a twitter client
-  var Twitter = require('twitter');
-  this.twit = new Twitter(conf.twitter);
-  
-};
-util.inherits(TwitterHarvester, Harvester);</code></pre>
-          </div>
-          <section id="start">
-            <h1>start</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-info radius ctx-type">method</div><span>TwitterHarvester.prototype.start()</span>
-            </p>
-          </section>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th style="width:20%">Option name</th>
-                <th style="width:20%">Type</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>streamOptions</td>
-                <td>Object</td>
-                <td>options and filters</td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="description"><p>initTwitterStream start harvesting from Twitter</p> 
-            <pre><code class="language-javascript">TwitterHarvester.prototype.start = function(streamOptions) {
-  var self = this;
-  
-  this.twit.verifyCredentials(function(data) {
-    if (typeof streamOptions === 'object' && streamOptions.track || streamOptions.follow || streamOptions.locations) {
-      self.twit.stream('statuses/filter', streamOptions, function(stream){
-        self.onStream(stream, streamOptions);
-        console.log("I'm listenning to twitter with filters", util.inspect(streamOptions));
-      });
-    } else {
-      self.twit.stream('statuses/sample',function(stream){
-        self.onStream(stream, {});
-        console.log("I'm listenning to twitter samples, use parameters to customize");
-        console.log("Each dot represents an indexed tweet: ");
-      });
-    }
-    
-  });
-};
-
-
-module.exports = TwitterHarvester;</code></pre>
-          </div>
         </div>
       </div>
     </div>

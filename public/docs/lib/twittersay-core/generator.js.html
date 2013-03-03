@@ -59,11 +59,14 @@
           <ul class="nav nav-list bs-docs-sidenav affix-top">
             <li class=""><a href="index.html">Main</a></li>
             <li class=""><a href="app.js.html">app.js</a></li>
+            <li class=""><a href="generate.js.html">generate.js</a></li>
             <li class=""><a href="Gruntfile.js.html">Gruntfile.js</a></li>
             <li class=""><a href="harvester.js.html">harvester.js</a></li>
+            <li class=""><a href="lib/phpjs.html">lib/phpjs</a></li>
             <li class=""><a href="routes/index.js.html">routes/index.js</a></li>
             <li class=""><a href="lib/htmlify/index.js.html">lib/htmlify/index.js</a></li>
             <li class=""><a href="lib/locations/index.js.html">lib/locations/index.js</a></li>
+            <li class=""><a href="lib/phpjs/index.js.html">lib/phpjs/index.js</a></li>
             <li class=""><a href="lib/twitter-trends/index.js.html">lib/twitter-trends/index.js</a></li>
             <li class=""><a href="lib/twittersay-core/common.js.html">lib/twittersay-core/common.js</a></li>
             <li class="active"><a href="lib/twittersay-core/generator.js.html">lib/twittersay-core/generator.js</a></li>
@@ -167,7 +170,9 @@ Generator.prototype.knownLanguages = [
           // damm, no words in %language :/
           // basic random key
           self._redis.randomkey(function(result, word) {
-            console.log('fallback randomWord !', word);
+            if (options.debug) {
+              console.log('fallback randomWord !', word);
+            }
             callback(word);
           });
         }
@@ -277,17 +282,26 @@ Generator.prototype.knownLanguages = [
   // get the first word
   this.randomWord( function(word) {
     function build(next) { // append that bit
+      var rechain = false;
       
-      // oh. no bit
+      // oh. no :/
       if (!next) {
         sentance.push('.');
+        
+        // we need moar words
+        rechain = (sentance.length < options.minwords);
 
       // enough, comma
       } else if (options.maxwords && (sentance.length > options.maxwords)) {
         sentance.push('.');
-
+        
+      // try to avoid repetitions
+      } else if (sentance.slice(sentance.length - 2).indexOf(' ' + next)) {
+          rechain = true;
+      }
+      
       // all good, add that word
-      } else {
+      else {
         sentance.push(' ' + next);
       }
       
@@ -295,6 +309,15 @@ Generator.prototype.knownLanguages = [
       if (options.until(sentance)) {
         callback(null, sentance.join(''));
 
+      // go on with a new word
+      } else if (rechain) {
+        self.randomWord(function(word) {
+
+          sentance.push(' ' + word);
+          self.nextWord(word, build);
+
+        }, options);
+        
       // go on ..
       } else {
         self.nextWord(next, build);

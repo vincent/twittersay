@@ -4,33 +4,46 @@ Generates fake tweets, using markov chains on previous tweeted content.
 
 ## Components
 
-TwitterSay is composed by two main components
-
 ### An harvester
 
-The harvester support the Twitter ```statuses/filter``` endpoint options (follow, track, locations) plus 
+The harvester supports the Twitter ```statuses/filter``` endpoint options (follow, track, locations) plus 
 
- - ```country``` that will be translated in locations
+ - ```country``` will be translated in locations (gps) arguments
  
- - ```lang``` that will ignore tweets in other languages
+ - ```lang``` will ignore tweets in other languages
  
 ```
-$ harvester --country Canada --lang french # will harvest tweets in french, from Canada
+$ node harvester.js --country Canada --lang french # will harvest tweets in french, from Canada
+```
+
+### A command line generator
+
+The generator supports the following options
+
+ - ```block``` generate a predefined block among tweet, paragraph or bible
+ - ```minwords``` generate a sentence with at least X words
+ - ```maxwords``` generate a sentence with at most X words
+ - ```lang``` generate a sentence in this language
+ - ```html``` produce an HTML output (links,twitteruids)
+ - ```lang``` generate a sentence in this language
+
+```
+$ node generate.js --lang french --block tweet --html # will output an HTML tweet-size sentance, beginning with a french word
 ```
 
 ### A webapp
 The webapp continuously display random, generated tweets.
 
 ```
-$ ./app.js # or npm start
+$ node app.js # or npm start
 ```
 
 ## Requirements
-You need a Redis instance to run the harvester and/or the webapp.
+You need a Redis instance to hold harvested data and generate sentances.
 
 ## Install
 ```
-$ npm install docserv
+$ npm install -d
 $ cp config.js.sample config.js
 ```
 
